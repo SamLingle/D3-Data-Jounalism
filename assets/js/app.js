@@ -21,31 +21,31 @@ var svg = d3
   .attr("height", svgHeight);
 
 // Append an SVG group
-var chartGroup = svg.append("g")
+var svgGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   
 // read in the data from the csv.
-  d3.csv("data.csv", function(error, povertyData) {
+  d3.csv("data.csv", function(error, censusData) {
     if (error) return console.warn("error:", error);
   
-    console.log(povertyData);
+    console.log(censusData);
   
     // log a list of names
-    var names = povertyData.map(data => data.name);
+    var names = censusData.map(data => data.name);
     console.log("names", names);
   
     // Cast each hours value in tvData as a number using the unary + operator
     tvData.forEach(function(data) {
-      data.smokes = +data.poverty;
-      data.phys_act = +data.phys_act;
+      data.smokes = +data.smokes;
+      data.poverty = +data.poverty;
       console.log("Poverty Data:", data.poverty);
-      console.log("Physical activity:", data.phys_act);
+      console.log("Smoker (%):", data.smokes);
     });
     // Create scale functions
     var yLinearScale = d3.scaleLinear().range([height, 0]);
     var xLinearScale = d3.scaleLinear().range([0, width]);
-    
+
     // Create axis functions
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
@@ -65,13 +65,13 @@ var chartGroup = svg.append("g")
     });
 
     yMin = d3.min(censusData, function(data) {
-        return +data.phys_act * 0.98;
+        return +data.smokes * 0.98;
     });
 
     yMax = d3.max(censusData, function(data) {
-        return +data.phys_act *1.02;
+        return +data.smokes *1.02;
     });
-         
+    
     xLinearScale.domain([xMin, xMax]);
     yLinearScale.domain([yMin, yMax]);
 
@@ -84,9 +84,9 @@ var chartGroup = svg.append("g")
         .html(function(data) {
             var stateName = data.state;
             var pov = +data.poverty;
-            var physAct = +data.phys_act;
+            var smokers = +data.smokes;
             return (
-                stateName + '<br> Poverty: ' + pov + '% <br> Physically Active: ' + physAct +'%'
+                stateName + '<br> Poverty: ' + pov + '% <br> smokers: ' + smokers +'%'
             );
         });
 
@@ -101,10 +101,10 @@ var chartGroup = svg.append("g")
             return xLinearScale(data.poverty)
         })
         .attr("cy", function(data, index) {
-            return yLinearScale(data.phys_act)
+            return yLinearScale(data.smokes)
         })
         .attr("r", "15")
-        .attr("fill", "lightblue")
+        .attr("fill", "green")
         // display tooltip on click
         .on("mouseenter", function(data) {
             toolTip.show(data);
@@ -113,7 +113,7 @@ var chartGroup = svg.append("g")
         .on("mouseout", function(data, index) {
             toolTip.hide(data);
         });
-        
+    
     // Appending a label to each data point
     chart.append("text")
         .style("text-anchor", "middle")
@@ -126,7 +126,7 @@ var chartGroup = svg.append("g")
                 return xLinearScale(data.poverty - 0);
             })
             .attr("y", function(data) {
-                return yLinearScale(data.phys_act - 0.2);
+                return yLinearScale(data.smokers - 0.2);
             })
             .text(function(data) {
                 return data.abbr
