@@ -71,7 +71,7 @@ var chartGroup = svg.append("g")
     yMax = d3.max(censusData, function(data) {
         return +data.phys_act *1.02;
     });
-    
+         
     xLinearScale.domain([xMin, xMax]);
     yLinearScale.domain([yMin, yMax]);
 
