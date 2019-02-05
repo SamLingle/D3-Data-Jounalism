@@ -45,7 +45,7 @@ var chartGroup = svg.append("g")
     // Create scale functions
     var yLinearScale = d3.scaleLinear().range([height, 0]);
     var xLinearScale = d3.scaleLinear().range([0, width]);
-
+    
     // Create axis functions
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
