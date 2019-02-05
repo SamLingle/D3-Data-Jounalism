@@ -113,7 +113,7 @@ var chartGroup = svg.append("g")
         .on("mouseout", function(data, index) {
             toolTip.hide(data);
         });
-    
+        
     // Appending a label to each data point
     chart.append("text")
         .style("text-anchor", "middle")
