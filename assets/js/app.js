@@ -26,10 +26,9 @@ var svgGroup = svg.append("g")
 
 
 // read in the data from the csv.
-d3.csv("assets/js/data.csv", function(error, censusData) {
-    if (error) return console.warn("error:", error);
-  
-    console.log(censusData);
+//d3.csv("assets/data/data.csv", function(error, censusData) {
+//    if (error) return console.warn("error:", error);
+d3.csv("assets/data/data.csv", function(censusData) {
     
     // Cast each value in censusData as a number using the unary + operator
     censusData.forEach(function(data) {
