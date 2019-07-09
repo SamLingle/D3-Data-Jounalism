@@ -19,7 +19,7 @@ An '+' following a median estimate means the median falls in the upper interval 
 An '***' entry in the margin of error column indicates that the median falls in the lowest interval or upper interval of an open-ended distribution. A statistical test is not appropriate.
 An '*****' entry in the margin of error column indicates that the estimate is controlled. A statistical test for sampling variability is not appropriate. 
 An 'N' entry in the estimate and margin of error columns indicates that data for this geographic area cannot be displayed because the number of sample cases is too small.
-An '(X)' means that the estimate is not applicable or not available.
+An '(X)' means that the estimate is not applicable or not available.  
 
 
 Data are based on a sample and are subject to sampling variability. The degree of uncertainty for an estimate arising from sampling variability is represented through the use of a margin of error. The value shown here is the 90 percent margin of error. The margin of error can be interpreted roughly as providing a 90 percent probability that the interval defined by the estimate minus the margin of error and the estimate plus the margin of error (the lower and upper confidence bounds) contains the true value. In addition to sampling variability, the ACS estimates are subject to nonsampling error (for a discussion of nonsampling variability, see Accuracy of the Data).  The effect of nonsampling error is not represented in these tables.
