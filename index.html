@@ -1,66 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>D3Times</title>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-    crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/d3Style.css">
+	<meta charset="UTF-8">
+	<title>U.S. Health Risks vs. Poverty Levels</title>
+	<!-- Latest compiled and minified CSS & JS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css"" href="./assets/css/style.css">
 
 </head>
-
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12 col-md-12">
-        <h1>D3Times</h1>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12  col-md-9">
-        <div id="scatter">
-          <!-- We append our chart here. -->
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12  col-md-9">
-        <div class="article">
-          <h2>Correlations Discovered Between Poverty level and Obesity</h2>
-          <p>Having read a study into the socioeconomics of weight linking communitites with higher poverty levels with
-            higher obesity rates, I was excited to get a chance to explore the data myself.
-          a more obese population. This chart suprised me by showing a weaker correlation between the two 
-          variables than I had originally thought considering that none of the records show a state 
-          with an obese population of under 20%. </p>
+	<div class="container">
+		<div class="row">
+			<div id="header" class="col-xs-12 col-md-12">
+				<h1>D3Times</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-s-12 col-md-10 offset-md-1">
+				<div class="embed-responsive embed-responsive-16by9 mb-4">
+					<iframe id="chart" class="embed-responsive-item" src="./d3.html"></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-s-12 col-md-10 offset-md-1">
+				<div class="article">
+					<iframe id="content" src="./content.html"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
 
-          <p>You can see that a higher rate of poverty generally correlates with a higher level of obesity. But the state with the least poverty (New Hampshire) had an obesity level of 27.4. 
-            WHile the state with the highest poverty percentage (Mississippi) has an obesity level of 35%. In total a 7.6% percent change in obesity to a 12.3% change 
-            in population under the poverty level. In addition there are outliers. Such as Deleware which boasts
-            a 12.5% poverty rate, but a 30.7% obesity rate. Or Indiana with 15.2% poverty and 32.7% obese population recorded. What this tells me 
-            is that though higher levels of poverty tend to mean higher levels of obesity, there are likely other factors that go into 
-            the amount of obese people within a population. Such as food choices, available exercize habits, and modes of transportation to name a few.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- Footer-->
+	<div id="footer">
+		<p>&copy; 2018 <a href="http://alexbuitron.com/">alexbuitron.com</a></p>
+	</div>
 
-  <!-- Footer-->
-  <div id="footer">
-    <p>The Coding Boot Camp&copy;2016</p>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
-  <script type="text/javascript" src="assets/js/app.js"></script>
+
 
 </body>
-
 </html>
+
