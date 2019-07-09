@@ -1,158 +1,231 @@
-// @TODO: YOUR CODE HERE!
-var svgWidth = 960;
-var svgHeight = 500;
+// When the browser window is resized, makeResponsive() is called.
+d3.select(window).on("resize", makeResponsive);
 
-var margin = {
-  top: 20,
-  right: 40,
-  bottom: 80,
-  left: 100
-};
-
-var width = svgWidth - margin.left - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
-
-// Create an SVG wrapper, append an SVG group that will hold our chart,
-// and shift the latter by left and top margins.
-var svg = d3
-  .select(".scatter")
-  .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
-
-// Append an SVG group
-var svgGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+makeResponsive();
 
 
-// read in the data from the csv.
-//d3.csv("assets/data/data.csv", function(error, censusData) {
-//    if (error) return console.warn("error:", error);
-d3.csv("assets/data/data.csv", function(censusData) {
-    
-    // Cast each value in censusData as a number using the unary + operator
-    censusData.forEach(function(data) {
-        data.obesity = +data.obesity;
-        data.poverty = +data.poverty;
-        console.log("Poverty Data:", data.poverty);
-        console.log("Obese (%):", data.obesity);
-    });    
-    // Create scale functions
-    var yLinearScale = d3.scaleLinear().range([height, 0]);
-    var xLinearScale = d3.scaleLinear().range([0, width]);
+function makeResponsive(){
+// svg container dimension set-up
+  var svgArea = d3.select("body").select("svg");
+  if (!svgArea.empty()) {svgArea.remove();}
 
-    // Create axis functions
-    var bottomAxis = d3.axisBottom(xLinearScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
+  // SVG wrapper dimensions are determined by the current width and height of the browser window.
+  var svgWidth = window.innerWidth,
+      svgHeight = window.innerHeight,
+      margin = {top: 10, right: 40, bottom:40, left: 120};
 
-    // Scale the domain
-    var xMin;
-    var xMax;
-    var yMin;
-    var yMax;
+  // plot container dimensions
+  var width = svgWidth - margin.left - margin.right,
+      height = svgHeight - margin.top - margin.bottom;
 
-    xMin = d3.min(censusData, function(data) {
-        return +data.poverty * 0.95;
-    });
+  var $div = d3
+      .select("body")
+      .append("div")
+        .attr("id", "chart")
 
-    xMax = d3.max(censusData, function(data) {
-        return +data.poverty * 1.05;
-    });
+  // DOM svg element creation w/ defined dimensions
+  var svg = $div
+      .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
-    yMin = d3.min(censusData, function(data) {
-        return +data.obesity * 0.98;
-    });
+  var chart = svg.append("g");
 
-    yMax = d3.max(censusData, function(data) {
-        return +data.obesity *1.02;
-    });
-    
-    xLinearScale.domain([xMin, xMax]);
-    yLinearScale.domain([yMin, yMax]);
+  // append a div to the bodyj to create tooltips, assign it a class
+  $div.append("div").attr("class", "tooltip").style("opacity", 0);
 
-    
-    // Initialize tooltip 
-    var toolTip = d3
-        .tip()
-        .attr("class", "tooltip")
-        .offset([80, -60])
-        .html(function(data) {
-            var stateName = data.state;
-            var poverty = +data.poverty;
-            var obesity = +data.obseity;
-            return (
-                stateName + '<br> Poverty: ' + poverty + '% <br> % Obese: ' + obesity +'%'
-            );
-        });
+  var csv = "./assets/data/data.csv"
+  d3.csv(csv, (err, data) => {
+      if (err) throw err;
 
-    // Create tooltip
-    chart.call(toolTip);
+      // convert string to integers
+      data.forEach((element) => {
+          element.id = +element.id;
+          element.poverty = +element.poverty;
+          element.no_healthcare_18_64 = +element.no_healthcare_18_64;
+          element.yes_1_alcohol_in_last_30_days = +element.yes_1_alcohol_in_last_30_days;
+          element.yes_blind_difficulty_seeing = +element.yes_blind_difficulty_seeing;
+          element.yes_difficulty_concentrating_remembering = +element.yes_difficulty_concentrating_remembering;
+      });
 
-    chart.selectAll("circle")
-        .data(censusData)
-        .enter()
-        .append("circle")
-        .attr("cx", function(data, index) {
-            return xLinearScale(data.poverty)
-        })
-        .attr("cy", function(data, index) {
-            return yLinearScale(data.obesity)
-        })
-        .attr("r", "15")
-        .attr("fill", "green")
-        // display tooltip on click
-        .on("mouseenter", function(data) {
-            toolTip.show(data);
-        })
-        // hide tooltip on mouseout
-        .on("mouseout", function(data, index) {
-            toolTip.hide(data);
-        });
-    
-    // Appending a label to each data point
-    chart.append("text")
-        .style("text-anchor", "middle")
-        .style("font-size", "12px")
-        .selectAll("tspan")
-        .data(censusData)
-        .enter()
-        .append("tspan")
-            .attr("x", function(data) {
-                return xLinearScale(data.poverty - 0);
+      var xValue = (d) => {return d.poverty;},
+          xScale = d3.scaleLinear().range([0, width]),
+          xMap = (d) => {return xScale(xValue(d));},
+          xAxis = d3.axisBottom(xScale);
+
+      var yValue,
+          yScale,
+          yMap,
+          yAxis;
+
+      function featureSelection(dataColumn){
+      // ySetup
+          yValue = (d) => {return d[dataColumn];},
+          yScale = d3.scaleLinear().range([height, 0]),
+          yMap = (d) => {return yScale(yValue(d));},
+          yAxis = d3.axisLeft(yScale);
+      }
+
+      // initialize tooltip
+      var tooltip = d3
+            .tip()
+            .attr("class", "tooltip")
+            .offset([60, -80])
+            .html((d) => {
+              var stateName = d.state;
+              var povertyPerc = d.poverty;
+              var columnPerc = d[currentAxisLabelY];
+
+              return "<strong>" + stateName + "</strong>" + "<br>Selection: " + columnPerc + "%<br>Poverty: " + povertyPerc + "%";
             })
-            .attr("y", function(data) {
-                return yLinearScale(data.obesity - 0.2);
-            })
-            .text(function(data) {
-                return data.abbr
-            });
-    
-    // Append an SVG group for the xaxis, then display x-axis 
-    chart
-        .append("g")
-        .attr('transform', `translate(0, ${height})`)
-        .call(bottomAxis);
 
-    // Append a group for y-axis, then display it
-    chart.append("g").call(leftAxis);
+      // circleText state setup
+      var fValue = (d) => {return d.state_abbr;};
 
-    // Append y-axis label
-    chart
+      var currentAxisLabelY = 'no_healthcare_18_64'
+      featureSelection(currentAxisLabelY)
+
+      // axis range
+      xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+      yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
+      // create tooltip
+      chart.call(tooltip);
+
+      // x-axis
+      chart.append("g")
+          .attr("class", "x-axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+
+      // y-axis
+      chart.append("g")
+          .attr("class", "y-axis")
+          .call(yAxis)
+
+      // draw dots
+      var node = chart.selectAll(".dot")
+            .data(data).enter();
+
+          node
+            .append("circle")
+              .attr("class", "dot")
+              .attr("r", 15)
+              .attr("cx", xMap)
+              .attr("cy", yMap)
+
+            node
+            .append("text")
+              .attr("class", "state")
+              .attr("x", (d) => {return xScale(d.poverty)})
+              .attr("y", (d) => {return yScale(d[currentAxisLabelY])})
+              .text(fValue)
+              .on("mouseover", (d) => {
+                tooltip.show(d)})
+              .on("mouseout", (d) => {
+                  tooltip.hide(d)});
+
+      chart
         .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0-margin.left + 40)
-        .attr("x", 0 - height/2)
-        .attr("dy","1em")
-        .attr("class", "axis-text")
-        .text("Obese (%)")
-
-    // Append x-axis labels
-    chart
-        .append("text")
-        .attr(
-            "transform",
-            "translate(" + width / 2 + " ," + (height + margin.top + 30) + ")"
-        )
-        .attr("class", "axis-text")
+        .attr("transform", "translate(" + width/2 + "," + (height + margin.top+20) + ")")
+        .attr("class", "axis-text benchmark")
         .text("In Poverty (%)");
-});
+
+      // default active axis
+      chart
+        .append("text")
+        .attr("transform", "translate(" + -margin.left*2/6 + "," + height/2 + ") rotate(270)")
+        .attr("class", "axis-text active")
+        .attr("data-axis-name", "no_healthcare_18_64")
+        .text("Adult Age 18-64 Lacks Healthcare (%)");
+
+      // inactive axis
+      chart
+        .append("text")
+        .attr("transform", "translate(" + -margin.left*3/6 + "," + height/2 + ") rotate(270)")
+        .attr("class", "axis-text inactive")
+        .attr("data-axis-name", "yes_1_alcohol_in_last_30_days")
+        .text("Min 1 Alcoholic Drink in Last 30 Days (%)");
+
+
+      // inactive axis
+      chart
+        .append("text")
+        .attr("transform", "translate(" + -margin.left*4/6 + "," + height/2 + ") rotate(270)")
+        .attr("class", "axis-text inactive")
+        .attr("data-axis-name", "yes_blind_difficulty_seeing")
+        .text("Blind or Difficulty Seeing Even w/ Glasses (%)");
+
+
+      // inactive axis
+      chart
+        .append("text")
+        .attr("transform", "translate(" + -margin.left*5/6 + "," + height/2 + ") rotate(270)")
+        .attr("class", "axis-text inactive")
+        .attr("data-axis-name", "yes_difficulty_concentrating_remembering")
+        .text("Difficulty Concentrating, Remembering, Making Decisions (%)");
+
+
+      function labelChange(clickedAxis){
+        d3
+          .selectAll(".axis-text")
+          .filter(".active")
+          .classed("active", false)
+          .classed("inactive", true);
+
+        clickedAxis.classed("inactive", false).classed("active", true);
+      }
+
+
+      d3.selectAll(".axis-text").on("click", function(){
+        // assign a variable to current axis
+        var clickedSelection = d3.select(this);
+
+        // "true" or "false" based on whether the axis is currently selected
+        var isClickedSelectionInactive = clickedSelection.classed("inactive");
+
+        var clickedAxis = clickedSelection.attr("data-axis-name");
+
+        if (isClickedSelectionInactive){
+          currentAxisLabelY = clickedAxis;
+          featureSelection(currentAxisLabelY);
+
+          yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
+          svg
+            .select(".y-axis")
+            .transition()
+
+            .duration(1800)
+            .call(yAxis);
+
+          d3.selectAll(".dot").each(function (){
+            d3
+              .select(this)
+              .transition()
+              .attr("cy", (d) => {
+                return yScale(+d[currentAxisLabelY]);
+              })
+
+              .duration(1800);
+          });
+
+          d3.selectAll(".state").each(function (){
+            d3
+              .select(this)
+              .transition()
+              .attr("y", (d) => {
+                return yScale(+d[currentAxisLabelY]);
+              })
+
+              .duration(1800);
+          });
+          labelChange(clickedSelection);
+        }
+
+      })
+
+  });
+}
