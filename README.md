@@ -13,7 +13,12 @@ Use the [D3.js](https://d3js.org/) library for manipulating web objects based on
 [Factfinder data](https://factfinder.census.gov/faces/nav/jsf/pages/searchresults.xhtml)
 
 A csv containing 56 rows and 16 columns that describes the overall rankings and averages of a U.S. state or territory according to the U.S. Census Bureau. 
-  * MOE in this case stands for [Margin of Error](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/hypothesis-testing/margin-of-error/), the range of values below and above the sample statistic in a confidence interval. 
+  * MOE in this case stands for [Margin of Error](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/hypothesis-testing/margin-of-error/), the range of values below and above the sample statistic in a confidence interval.
+  2. Format and Test the Data
+
+
   
 ## How to Run
-  
+ * Clone or download files from the green button in the top right corner of the github repo.
+ * Open the index.html file to deploy the webpage. 
+
