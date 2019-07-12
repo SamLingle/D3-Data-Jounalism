@@ -20,5 +20,10 @@ A csv containing 56 rows and 16 columns that describes the overall rankings and 
   
 ## How to Run
  * Clone or download files from the green button in the top right corner of the github repo.
+ * run the command:
+ '''
+  python -m http.server
+ '''
+  This will open up a server that allows you to view the svg elements. If you do not do this CORS will block the svg from loading for security purposes.
  * Open the index.html file to deploy the webpage. 
 
